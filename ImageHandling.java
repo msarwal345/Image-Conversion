@@ -125,7 +125,6 @@ public class ImageHandling {
         String documentsPath = userHome + File.separator + "Documents";
         String downloadsPath = userHome + File.separator + "Downloads";
 
-        System.out.println(documentsPath);
         
         String pathname="";
 
