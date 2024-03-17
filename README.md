@@ -4,7 +4,7 @@
 
 I made a project in java which helps you change the format of a file using ImageIO Class.
 
-# Prerequistes 
+# Prerequisites
 
  Java Development Kit (JDK 21) Link-: https://www.oracle.com/in/java/technologies/downloads/
 
