@@ -14,7 +14,7 @@ import javax.imageio.ImageIO;
  */
 
 public class ImageHandling {
-    //Created a function to convert the URI to URL
+    // Created a function to convert the URI to URL
     public static URL toURL(String s) throws MalformedURLException {
         URL x = null;
         try {
@@ -25,14 +25,14 @@ public class ImageHandling {
         return x;
     }
 
-    //Created a Function to handle Conversiom
-    public void ImageConversion(BufferedImage image,int choice,String pathString,String fileName){
-        int flag=0;
-        String bmpFileName= "/"+fileName+".bmp";
-        String gifFileName= "/"+fileName+".gif";
-        String jpgFileName= "/"+fileName+".jpg";
-        String jpegFileName="/"+fileName+".jpeg";
-        String pngFileName= "/"+fileName+".png";
+    // Created a Function to handle Conversiom
+    public void ImageConversion(Scanner sc, BufferedImage image, int choice, String pathString, String fileName) {
+        boolean validChoice = false;
+        String bmpFileName = "/" + fileName + ".bmp";
+        String gifFileName = "/" + fileName + ".gif";
+        String jpgFileName = "/" + fileName + ".jpg";
+        String jpegFileName = "/" + fileName + ".jpeg";
+        String pngFileName = "/" + fileName + ".png";
 
         File dir = new File(pathString);
 
@@ -40,46 +40,54 @@ public class ImageHandling {
             dir.mkdirs();
         }
 
-        try {
-            if (choice == 1) {
-                ImageIO.write(image, "png", new File(dir.getPath() + pngFileName));
-            } 
-            else if (choice == 2) {
-                ImageIO.write(image, "gif", new File(dir.getPath() + gifFileName));
-            } 
-            else if (choice == 3) {
-                ImageIO.write(image, "bmp", new File(dir.getPath() + bmpFileName));
-            } 
-            else if (choice == 4) {
-                ImageIO.write(image, "jpg", new File(dir.getPath() + jpgFileName));
-            } 
-            else if (choice == 5) {
-                ImageIO.write(image, "jpeg", new File(dir.getPath() + jpegFileName));
-            } 
-            else if (choice == 6) {
-                ImageIO.write(image, "png", new File(dir.getPath() + pngFileName));
-                ImageIO.write(image, "gif", new File(dir.getPath() + gifFileName));
-                ImageIO.write(image, "bmp", new File(dir.getPath() + bmpFileName));
-                ImageIO.write(image, "jpg", new File(dir.getPath() + jpgFileName));
-                ImageIO.write(image, "jpeg",new File(dir.getPath() + jpegFileName));
-            } 
-            else {
-                flag=1;
-                System.out.println("Please enter a valid choice");
+        while (!validChoice) {
+            try {
+                switch (choice) {
+                    case 1:
+                        ImageIO.write(image, "png", new File(dir.getPath() + pngFileName));
+                        validChoice = true;
+                        break;
+                    case 2:
+                        ImageIO.write(image, "gif", new File(dir.getPath() + gifFileName));
+                        validChoice = true;
+                        break;
+                    case 3:
+                        ImageIO.write(image, "bmp", new File(dir.getPath() + bmpFileName));
+                        validChoice = true;
+                        break;
+                    case 4:
+                        ImageIO.write(image, "jpg", new File(dir.getPath() + jpgFileName));
+                        validChoice = true;
+                        break;
+                    case 5:
+                        ImageIO.write(image, "jpeg", new File(dir.getPath() + jpegFileName));
+                        validChoice = true;
+                        break;
+                    case 6:
+                        ImageIO.write(image, "png", new File(dir.getPath() + pngFileName));
+                        ImageIO.write(image, "gif", new File(dir.getPath() + gifFileName));
+                        ImageIO.write(image, "bmp", new File(dir.getPath() + bmpFileName));
+                        ImageIO.write(image, "jpg", new File(dir.getPath() + jpgFileName));
+                        ImageIO.write(image, "jpeg", new File(dir.getPath() + jpegFileName));
+                        validChoice = true;
+                        break;
+                    default:
+                        System.out.println("Please enter a valid choice");
+                        choice = sc.nextInt(); // Re-prompt for choice
+                        break;
+                }
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
             }
-            
-        } catch (Exception e) {
-           System.err.println(e.getMessage());
         }
 
-        if(flag==0){
         System.out.println("Done...");
-        }
     }
+
     public static void main(String[] args) throws IOException {
 
         Scanner sc = new Scanner(System.in);
-        BufferedImage image=null;
+        BufferedImage image = null;
 
         System.out.println("Heyy! What do you Have ?");
         System.out.println("Enter '1' if you have an image URL");
@@ -88,14 +96,14 @@ public class ImageHandling {
         int n = sc.nextInt();
         sc.nextLine();
 
-         // Asking what does the user have a File Path or a URL??
+        // Asking what does the user have a File Path or a URL??
         switch (n) {
             case 1:
                 System.out.println("Please enter the image URL...");
                 String s = sc.nextLine();
                 try {
                     URL url = toURL(s);
-                     image = ImageIO.read(url);
+                    image = ImageIO.read(url);
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
@@ -104,47 +112,53 @@ public class ImageHandling {
             case 2:
                 System.out.println("Please enter the path of the file");
                 File file = new File(sc.nextLine());
-                 image = ImageIO.read(file);
+                image = ImageIO.read(file);
                 break;
-            
+
             default:
-               System.out.println("Please select the valid Number");
+                System.out.println("Please select the valid Number");
+                main(args);
+                return;
 
         }
-
-        // Asking the user where he wants to store the file
-        System.out.println("Where do you want to store the file");
-        System.out.println("Please for 1 if you want to store the file in the Downloads");
-        System.out.println("Please for 2 if you want to store the file in the Documents");
-        System.out.println("Please for 3 if you want to store the file in the a paticular path");
-        
-        int filePathChoice=sc.nextInt();
-        sc.nextLine();
 
         String userHome = System.getProperty("user.home");
         String documentsPath = userHome + File.separator + "Documents";
         String downloadsPath = userHome + File.separator + "Downloads";
 
-        
-        String pathname="";
+        String pathname = "";
 
-        if(filePathChoice==1){
-            pathname=downloadsPath;
+        // Asking the user where he wants to store the file
+        while (true) {
+            System.out.println("Where do you want to store the file");
+            System.out.println("Please enter 1 if you want to store the file in the Downloads");
+            System.out.println("Please enter 2 if you want to store the file in the Documents");
+            System.out.println("Please enter 3 if you want to store the file in the a paticular path");
+
+            int filePathChoice = sc.nextInt();
+            sc.nextLine();
+
+            if (filePathChoice == 1) {
+                pathname = downloadsPath;
+                break; // Exit the loop if a valid choice is made
+            } else if (filePathChoice == 2) {
+                pathname = documentsPath;
+                break; // Exit the loop if a valid choice is made
+            } else if (filePathChoice == 3) {
+                System.out.println("Please enter the path where you want to store the image:");
+                pathname = sc.nextLine();
+                break; // Exit the loop if a valid choice is made
+            } else {
+                System.out.println("Please select a valid Number");
+                // Continue the loop if an invalid choice is made
+            }
         }
-        else if(filePathChoice==2){
-            pathname=documentsPath;
-        }
-        else if (filePathChoice==3){
-            System.out.println("Please enter the name of the path you want it get stored at ");
-            pathname=sc.nextLine();
-        }
 
-       // Asking user what name they want to give to their file
-       System.out.println("Please Enter the name of the file");
-       String fileName=sc.nextLine();
+        // Asking user what name they want to give to their file
+        System.out.println("Please Enter the name of the file of your choice");
+        String fileName = sc.nextLine();
 
-
-       // What kind of file format the user wants the current file to be converted into
+        // What kind of file format the user wants the current file to be converted into
         System.out.println("Please enter the format you want to convert your image File");
         System.out.println("Please enter 1 for png file format");
         System.out.println("Please enter 2 for gif file format");
@@ -155,12 +169,12 @@ public class ImageHandling {
 
         // Asking the choice of the user
         int choice = sc.nextInt();
-        
+
         // Creating the Object of the class ImageHandling
-        ImageHandling object=new ImageHandling();
-        
+        ImageHandling object = new ImageHandling();
+
         // Calling the function ImageConversion
-        object.ImageConversion(image, choice,pathname,fileName);
+        object.ImageConversion(sc, image, choice, pathname, fileName);
 
         sc.close();
 
